@@ -1,0 +1,12 @@
+create table profile(id int primary key default 1, name text, title text, bio text, status text, tags text, avatar_url text, email text, phone text, github text, linkedin text);
+create table skills(id bigint generated always as identity primary key, name text not null, level int default 80);
+create table projects(id bigint generated always as identity primary key, title text not null, description text, link text, created_at timestamptz default now());
+alter table profile enable row level security; alter table skills enable row level security; alter table projects enable row level security;
+create policy "read" on profile for select using (true); create policy "read" on skills for select using (true); create policy "read" on projects for select using (true);
+create policy "write" on profile for all to authenticated using (true) with check (true);
+create policy "write" on skills for all to authenticated using (true) with check (true);
+create policy "write" on projects for all to authenticated using (true) with check (true);
+insert into profile(id,name,title,bio,status,tags,email,phone) values(1,'Muhammed Ehsanullah Khan','Aspiring Software Engineer','Computer Science student at APS BPME, Kakul, exploring software development, technology and creative work.','Available for learning & opportunities','Student • Developer • Creative','your@email.com','+92 300 0000000');
+insert into storage.buckets(id,name,public) values('avatars','avatars',true);
+create policy "avatar read" on storage.objects for select using (bucket_id='avatars');
+create policy "avatar write" on storage.objects for all to authenticated using (bucket_id='avatars') with check (bucket_id='avatars');
